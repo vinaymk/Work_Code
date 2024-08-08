@@ -1,6 +1,6 @@
 def process_string(input_str):
-    # Define the logical operators
-    operators = {'AND', 'OR', 'NOT'}
+    # Define the logical operators and their replacements
+    operator_replacements = {'AND': '&', 'OR': '|', 'NOT': '!'}
     
     # Split the input string into words
     words = input_str.split()
@@ -10,25 +10,20 @@ def process_string(input_str):
     
     i = 0
     while i < len(words):
-        if words[i] in operators:
-            # If the current word is an operator, add it to the processed list
-            processed.append(words[i])
+        if words[i] in operator_replacements:
+            # If the current word is an operator, replace it and add to the processed list
+            processed.append(operator_replacements[words[i]])
             i += 1
         else:
             # Start a sublist for the words before the next operator
             sublist = []
-            while i < len(words) and words[i] not in operators:
+            while i < len(words) and words[i] not in operator_replacements:
                 sublist.append(words[i])
                 i += 1
             # Join the sublist with <-> and add to the processed list
-            processed.append('<->'.join(sublist))
+            processed.append(' <-> '.join(sublist))
     
     # Join all parts into the final string
     final_string = ' '.join(processed)
     
     return final_string
-
-# Example usage
-input_str = "apple orange AND banana grape OR mango NOT cherry"
-output_str = process_string(input_str)
-print(output_str)
