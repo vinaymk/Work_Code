@@ -11,6 +11,208 @@ Can you walk me through your background and highlight the experiences that led y
 
 Feel free to take your time with the questions, and don't hesitate to ask for clarification if something isn’t clear. 
 
+==> Basic Things
+
+Basic Queries
+Retrieve all columns for all customers.
+
+sql
+Copy code
+SELECT * FROM Customers;
+Find the names and ages of customers from the country 'USA'.
+
+sql
+Copy code
+SELECT first_name, last_name, age 
+FROM Customers 
+WHERE country = 'USA';
+List the unique countries of customers.
+
+sql
+Copy code
+SELECT DISTINCT country 
+FROM Customers;
+Get the total number of orders placed by each customer.
+
+sql
+Copy code
+SELECT customer_id, COUNT(*) AS total_orders 
+FROM Orders 
+GROUP BY customer_id;
+Find the customers who have placed more than 5 orders.
+
+sql
+Copy code
+SELECT customer_id 
+FROM Orders 
+GROUP BY customer_id 
+HAVING COUNT(*) > 5;
+Joins
+Get the full details of orders along with customer names.
+
+sql
+Copy code
+SELECT o.order_id, o.item, o.amount, c.first_name, c.last_name 
+FROM Orders o
+INNER JOIN Customers c ON o.customer_id = c.customer_id;
+Find all customers who have not placed any orders.
+
+sql
+Copy code
+SELECT c.customer_id, c.first_name, c.last_name 
+FROM Customers c
+LEFT JOIN Orders o ON c.customer_id = o.customer_id
+WHERE o.order_id IS NULL;
+List all orders and their shipping statuses.
+
+sql
+Copy code
+SELECT o.order_id, o.item, s.status 
+FROM Orders o
+LEFT JOIN Shippings s ON o.customer_id = s.customer;
+Find all customers who have both placed orders and have shipping records.
+
+sql
+Copy code
+SELECT DISTINCT c.customer_id, c.first_name, c.last_name 
+FROM Customers c
+INNER JOIN Orders o ON c.customer_id = o.customer_id
+INNER JOIN Shippings s ON c.customer_id = s.customer;
+Get a list of customers and their orders, including those who may not have shipping records.
+
+sql
+Copy code
+SELECT c.first_name, c.last_name, o.item, o.amount, s.status 
+FROM Customers c
+LEFT JOIN Orders o ON c.customer_id = o.customer_id
+LEFT JOIN Shippings s ON o.customer_id = s.customer;
+Aggregations
+Find the total amount spent by each customer.
+
+sql
+Copy code
+SELECT customer_id, SUM(amount) AS total_spent 
+FROM Orders 
+GROUP BY customer_id;
+Get the average age of customers who have placed orders.
+
+sql
+Copy code
+SELECT AVG(c.age) AS average_age 
+FROM Customers c
+INNER JOIN Orders o ON c.customer_id = o.customer_id;
+List the highest order amount and the corresponding item for each customer.
+
+sql
+Copy code
+SELECT customer_id, item, MAX(amount) AS highest_amount 
+FROM Orders 
+GROUP BY customer_id, item;
+Advanced Queries
+Retrieve the customers who have placed orders worth more than the average amount spent by all customers.
+
+sql
+Copy code
+SELECT c.customer_id, c.first_name, c.last_name 
+FROM Customers c
+INNER JOIN Orders o ON c.customer_id = o.customer_id
+GROUP BY c.customer_id, c.first_name, c.last_name
+HAVING SUM(o.amount) > (
+    SELECT AVG(total_amount) 
+    FROM (SELECT SUM(amount) AS total_amount FROM Orders GROUP BY customer_id) AS avg_amount
+);
+Find the number of shippings that have a status of '1' for each customer.
+
+sql
+Copy code
+SELECT customer, COUNT(*) AS status_count 
+FROM Shippings 
+WHERE status = 1 
+GROUP BY customer;
+Retrieve customers who have orders with an amount greater than the average order amount for their country.
+
+sql
+Copy code
+SELECT c.customer_id, c.first_name, c.last_name 
+FROM Customers c
+INNER JOIN Orders o ON c.customer_id = o.customer_id
+WHERE o.amount > (
+    SELECT AVG(amount) 
+    FROM Orders o2
+    INNER JOIN Customers c2 ON o2.customer_id = c2.customer_id
+    WHERE c2.country = c.country
+);
+List customers who have never had an order shipped.
+
+sql
+Copy code
+SELECT c.customer_id, c.first_name, c.last_name 
+FROM Customers c
+LEFT JOIN Orders o ON c.customer_id = o.customer_id
+LEFT JOIN Shippings s ON o.customer_id = s.customer
+WHERE s.shipping_id IS NULL;
+Subqueries
+Get the details of the highest spending customer.
+
+sql
+Copy code
+SELECT * 
+FROM Customers 
+WHERE customer_id = (
+    SELECT customer_id 
+    FROM Orders 
+    GROUP BY customer_id 
+    ORDER BY SUM(amount) DESC 
+    LIMIT 1
+);
+Find all customers who have placed orders with an amount that is greater than the highest amount of orders placed by customers from the 'USA'.
+
+sql
+Copy code
+SELECT customer_id, first_name, last_name 
+FROM Orders o
+INNER JOIN Customers c ON o.customer_id = c.customer_id
+WHERE o.amount > (
+    SELECT MAX(amount) 
+    FROM Orders o2
+    INNER JOIN Customers c2 ON o2.customer_id = c2.customer_id
+    WHERE c2.country = 'USA'
+);
+List customers who have the same last name as the customers who have placed orders worth more than $500.
+
+sql
+Copy code
+SELECT DISTINCT c1.customer_id, c1.first_name, c1.last_name 
+FROM Customers c1
+WHERE c1.last_name IN (
+    SELECT c2.last_name 
+    FROM Orders o
+    INNER JOIN Customers c2 ON o.customer_id = c2.customer_id
+    WHERE o.amount > 500
+);
+Find the number of orders placed by customers who have more than one shipping record.
+
+sql
+Copy code
+SELECT c.customer_id, COUNT(o.order_id) AS order_count 
+FROM Customers c
+INNER JOIN Orders o ON c.customer_id = o.customer_id
+INNER JOIN Shippings s ON c.customer_id = s.customer
+GROUP BY c.customer_id
+HAVING COUNT(DISTINCT s.shipping_id) > 1;
+Performance and Optimization
+Create an index on the customer_id column in the Orders table to improve query performance.
+
+sql
+Copy code
+CREATE INDEX idx_customer_id ON Orders(customer_id);
+Explain how adding an index on the amount column in the Orders table could affect query performance.
+
+Adding an index on the amount column can speed up queries that filter or sort by amount, but it may slow down INSERT operations and increase storage usage.
+Identify and discuss the potential performance impact of running a query that joins Orders and Shippings tables on non-indexed columns.
+
+Without indexes, the query might require full table scans, leading to slower performance, especially with large datasets. Adding indexes on the join columns can mitigate this issue.
+
 
 ===> Advanced Conpepts:
 
