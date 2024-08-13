@@ -1,4 +1,5 @@
 Interview:
+
 GM , HRU
 
 myself V, and we have Shiva. We would be taking your interview...
@@ -11,4 +12,129 @@ Can you walk me through your background and highlight the experiences that led y
 Feel free to take your time with the questions, and don't hesitate to ask for clarification if something isn’t clear. 
 
 
+===> Advanced Conpepts:
 
+1. Window Functions
+Question: How would you write a query to find the top 3 highest-paid employees in each department using a window function?
+
+sql
+Copy code
+SELECT employee_id, name, department_id, salary,
+       RANK() OVER (PARTITION BY department_id ORDER BY salary DESC) AS dept_rank
+FROM employees
+WHERE dept_rank <= 3;
+Follow-up: Discuss the difference between RANK() and DENSE_RANK() in this context.
+
+2. Common Table Expressions (CTEs)
+Question: Write a query to find all employees in a hierarchical organizational structure using a recursive CTE.
+
+sql
+Copy code
+WITH RECURSIVE OrgChart AS (
+    SELECT employee_id, name, manager_id
+    FROM employees
+    WHERE manager_id IS NULL
+    UNION ALL
+    SELECT e.employee_id, e.name, e.manager_id
+    FROM employees e
+    INNER JOIN OrgChart oc ON e.manager_id = oc.employee_id
+)
+SELECT * FROM OrgChart;
+Follow-up: Explain how recursive CTEs differ from regular CTEs.
+
+3. Views
+Question: How would you create a view that shows the total sales per customer, and what are the potential benefits or drawbacks of using views in this scenario?
+
+sql
+Copy code
+CREATE VIEW customer_sales AS
+SELECT c.customer_id, c.customer_name, SUM(o.amount) AS total_sales
+FROM customers c
+JOIN orders o ON c.customer_id = o.customer_id
+GROUP BY c.customer_id, c.customer_name;
+Follow-up: Discuss whether a view or a materialized view would be more appropriate in a high-traffic application.
+
+4. Indexes
+Question: Given a query that frequently filters on order_date and customer_id, how would you optimize the query with indexing?
+
+sql
+Copy code
+CREATE INDEX idx_order_date_customer_id
+ON orders (order_date, customer_id);
+Follow-up: Explain the difference between a composite index and single-column indexes.
+
+5. Transactions
+Question: Describe a scenario where using a transaction would be necessary, and demonstrate how to implement it with SQL.
+
+sql
+Copy code
+START TRANSACTION;
+
+UPDATE accounts SET balance = balance - 100 WHERE account_id = 1;
+UPDATE accounts SET balance = balance + 100 WHERE account_id = 2;
+
+COMMIT;
+Follow-up: What could happen if the transaction fails halfway through, and how would you handle it?
+
+6. Window Functions (LEAD and LAG)
+Question: Write a query to compare each employee's current salary with their previous year's salary using a window function.
+
+sql
+Copy code
+SELECT employee_id, salary,
+       LAG(salary) OVER (PARTITION BY employee_id ORDER BY year) AS previous_salary
+FROM employee_salaries
+ORDER BY employee_id, year;
+Follow-up: Discuss a scenario where LEAD() might be more useful than LAG().
+
+7. Stored Procedures
+Question: Create a stored procedure that updates the salary of employees based on their performance rating.
+
+sql
+Copy code
+CREATE PROCEDURE UpdateSalaries()
+BEGIN
+    UPDATE employees
+    SET salary = salary * 1.10
+    WHERE performance_rating = 'A';
+END;
+Follow-up: How would you modify this procedure to handle errors gracefully?
+
+8. User-Defined Functions (UDFs)
+Question: Write a user-defined function that calculates the total number of days between two dates.
+
+sql
+Copy code
+CREATE FUNCTION DaysBetween(date1 DATE, date2 DATE)
+RETURNS INT
+BEGIN
+    RETURN DATEDIFF(date1, date2);
+END;
+Follow-up: When would you choose to use a scalar function versus a table-valued function?
+
+9. Triggers
+Question: Write an AFTER INSERT trigger that automatically logs any new order placed into a order_log table.
+
+sql
+Copy code
+CREATE TRIGGER after_order_insert
+AFTER INSERT ON orders
+FOR EACH ROW
+BEGIN
+    INSERT INTO order_log(order_id, log_date)
+    VALUES (NEW.order_id, NOW());
+END;
+Follow-up: Discuss potential performance issues with using triggers extensively.
+
+10. Views with Aggregations
+Question: How would you create a view that shows the average salary by department, and what are the implications for query performance?
+
+sql
+Copy code
+CREATE VIEW avg_salary_by_department AS
+SELECT department_id, AVG(salary) AS avg_salary
+FROM employees
+GROUP BY department_id;
+Follow-up: How would you handle updates to this view if the underlying data changes frequently?
+
+These questions are designed to test an intermediate-level candidate's understanding of advanced SQL concepts and their ability to apply these concepts in practical scenarios.
