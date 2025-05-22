@@ -1,0 +1,82 @@
+Python concept based :
+
+List/Dict Comprehension & Lambda Use
+
+Scenario:
+You are given a list of drugs with prices and need to apply a 10% discount only to drugs that cost more than $100.
+
+Question:
+
+Write a one-liner to filter and apply the discount using list comprehension or a lambda.
+
+drugs = [{"name": "DrugA", "price": 150}, {"name": "DrugB", "price": 90},{"name": "DrugC", "price": 120},{"name": "DrugD", "price": 45}]
+
+--> I want output :
+
+output = [{"name": "DrugA", "price": 135},{"name": "DrugC", "price": 108}]
+
+
+### Answer discounted = [{"name": d["name"], "price": d["price"] * 0.9} for d in drugs if d["price"] > 100]
+
+### Lambda based solution :
+drugs = [{"name": "DrugA", "price": 120}, {"name": "DrugB", "price": 80}, {"name": "DrugC", "price": 150}]
+
+discounted = list(map(
+    lambda d: {"name": d["name"], "price": round(d["price"] * 0.9, 2)},
+    filter(lambda d: d["price"] > 100, drugs)
+))
+
+
+-------->
+
+Scenario:
+
+You are analyzing a list of medicines and their stock levels from two separate sources. The pharmacy manager provides two lists:
+
+drug_names = ["Paracetamol", "Ibuprofen", "Aspirin"]
+
+stock_counts = [50, 20, 0]
+
+You are asked to generate a list of strings that display the drug's serial number, name, and stock, in the format:
+
+
+["1. Paracetamol - Stock: 50", "2. Ibuprofen - Stock: 20", "3. Aspirin - Stock: 0"]
+
+-------->
+
+Cloud:
+
+3. What is the difference between scalability and elasticity in the cloud?
+✅ Expected:
+
+Scalability: Ability to increase capacity (e.g., more CPUs/instances)
+
+Elasticity: Auto-adjusting resources based on demand (e.g., scale in/out)
+
+
+5. What is a Virtual Private Cloud (VPC), and why is it important?
+✅ Expected:
+
+A logically isolated network for cloud resources
+
+Allows secure control over IP ranges, subnets, firewalls, routing
+
+
+8. What is serverless computing, and when would you use it?
+✅ Expected:
+
+Running code without managing servers
+
+Automatically scales and billed per execution time
+
+Examples: AWS Lambda, Azure Functions
+
+
+9. What is object storage vs block storage? Give examples.
+✅ Expected:
+
+Object Storage: Store unstructured data (e.g., images, videos) – e.g., S3, Azure Blob
+
+Block Storage: Used for disks/OS-level storage – e.g., EBS, Azure Managed Disks
+
+
