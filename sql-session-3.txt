@@ -1,0 +1,190 @@
+SQL session - 3 :
+
+--> comment => --
+    we have the concept of comment in all the programing languages, similarly in sql it is denoted by two hyphens : --
+	
+    A comment in SQL is a piece of text that is not executed as part of the SQL statement. 
+	It is used to explain or annotate the SQL code, making it easier to understand for yourself and others. 
+	
+	 Single-line comment
+		Starts with -- (two hyphens)
+
+		Everything after -- on that line is ignored by SQL
+	
+    Multi-line comment (for some SQL dialects like MySQL, PostgreSQL)
+    Starts with /* and ends with */	
+		
+		
+	
+
+---> Alias => AS in postgres
+     * The AS keyword is used to give columns or tables a temporary name that can be used to identify that column or table later.
+	 
+	 * Syntax : SELECT column_1 AS alias_1, 
+              column_2 AS alias_2, 
+              ... ...column_n AS alias_n
+              FROM table_name;
+    
+     * --> Give example with one column, then two columns and so on..	
+	 
+AS --> examples with the column name and also table name, count(*) as examples
+	 	 
+	 
+	 * It's a common practice to use AS to create aliases when working with functions. For example
+	 
+	 * --> SELECT COUNT(*) AS total_customers FROM Customers;
+	   --> select AVG(amount) as Average_Order_Amount from orders 
+			group by item
+			having Average_Order_Amount<=400
+	 
+	 * --> AS used to alias the table --> you will know its importance when joining tables 
+	 
+	 * ==> The AS keyword can also be used to give temporary names to tables. For example,
+	       SELECT cu.first_name, cu.last_name
+           FROM Customers AS cu;
+	 
+	 --> with Join : 
+	 --> later after join will come to this
+	 
+	     SELECT C.customer_id AS cid, C.first_name AS name, O.amount
+         FROM Customers AS C
+         JOIN Orders AS O
+         ON C.customer_id = O.customer_id;
+		 
+	  
+	 
+	 
+---> AND, OR NOT operators
+
+    --> SELECT first_name, last_name
+       FROM Customers
+       WHERE country = 'USA' AND last_name = 'Doe';
+	   
+	   --> OR
+	   
+	   --> NOT
+	   -- select customers who don't live in the USA
+
+			SELECT first_name, last_name
+			FROM Customers
+			WHERE NOT country = 'USA';
+	    
+		<> / !=
+		
+		
+	
+
+---> IN, NOT IN
+
+     We use the IN operator with the WHERE clause to match values in a list.
+	 
+	 SELECT first_name, country
+     FROM Customers
+     WHERE country IN ('USA');
+	 --- also list can be of integers, dates..
+	 
+	 --> NOT IN a list? 
+
+
+# ---> BETWEEN , IS NULL, IS NOT NULL	 
+
+
+
+---> Joins
+     ---> Till now we saw how to select the data from a single table...
+	 ---> The whole concept of relational DB means that if there is some relation between data then we should be 
+	 able to use that and fetch or query the data accordingly...
+	 
+	 For doing that --> we use concept of joins-->
+	 also I have explained the concept of promary key and foreign key.. which are essesntial to understand the joins...
+	 
+	So, The SQL JOIN statement is used to combine rows from two 
+	tables based on a common column and selects records that have matching values in these columns. 
+    
+    SYntax:
+	SELECT columns_from_both_tables
+    FROM table1
+    JOIN table2
+    ON table1.column1 = table2.column2
+    	
+	Here,
+
+    table1 and table2 are the two tables that are to be joined
+    column1 is the column in table1 that is related to column2 in table2	
+	
+	
+	SELECT Customers.customer_id, Customers.first_name, Orders.amount
+		FROM Customers
+		JOIN Orders
+		ON Customers.customer_id = Orders.customer;
+
+    ---> Similarly one can join multiple tables:
+	     lets join all the three tables:
+	
+    
+	This is a simple join which we are doing and it gives us the data which has maching entries only...
+	it means only in that example --> betty is not coming in the output..
+	
+	Types of SQL JOINS:
+	INNER Join
+	left join
+	right join
+	full outer join
+	
+	---> if you don't provide the name of join then by default it is considred as inner join..
+	
+	LEFT Join:
+	The SQL LEFT JOIN combines two tables based on a common column. It then selects records having matching values 
+	in these columns and the remaining rows from the left table.
+	
+SELECT Customers.customer_id, Customers.first_name, Orders.item
+FROM Customers
+LEFT JOIN Orders
+ON Customers.customer_id = Orders.customer_id;
+	
+similarly RIGHT
+
+then Full outer join
+
+Here, the SQL query performs a FULL OUTER JOIN on two tables, Customers and Orders. 
+This means that the result set contains all the rows from both tables, including the ones that don't have common customer_id values.
+
+SELECT Customers.customer_id, Customers.first_name, Orders.item
+FROM Customers
+FULL OUTER JOIN Orders
+ON Customers.customer_id = Orders.customer_id;
+
+
+* ---> JOin with Alias
+SQL JOIN With AS Alias
+We can use AS aliases with table names to make our query short and clean. For example,
+
+-- use alias C for Customers table
+-- use alias O for Orders table
+
+SELECT C.customer_id, C.first_name, O.amount
+FROM Customers AS C
+JOIN Orders AS O
+ON C.customer_id = O.customer;
+
+--> using where :
+  select Customers.first_name,Orders.item,Shippings.status
+from Customers,Orders,Shippings
+where Customers.customer_id=Orders.customer_id and Customers.customer_id=Shippings.customer
+
+
+	
+
+---> Advanced :
+
+---> subquery
+
+ 
+---> tables --> list tables
+     coluns --> list columns
+	 	 
+Important keywords or reserve words that would be beneficial
+
+---> concept of distinct- > DISTINCT
+
+--> contains		 
